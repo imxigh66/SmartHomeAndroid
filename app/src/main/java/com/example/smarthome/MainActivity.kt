@@ -11,6 +11,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.smarthome.ui.screens.login.LoginScreen
 import com.example.smarthome.ui.theme.SmartHomeTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,29 +23,35 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             SmartHomeTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                val navController=rememberNavController()
+
+                NavHost(
+                    navController=navController,
+                    startDestination="login"
+                ){
+                    composable("login"){
+                        LoginScreen(
+                            onLoginSuccess = {
+                                navController.navigate("dashboard"){
+                                    popUpTo("login"){inclusive=true}
+                                }
+                            },
+                            onRegisterClick = {
+                                navController.navigate("register")
+                            }
+                        )
+                    }
+
+                    composable("dashboard") {
+                        // TODO — добавим позже
+                    }
+
+                    composable("register") {
+                        // TODO — добавим позже
+                    }
                 }
             }
         }
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    SmartHomeTheme {
-        Greeting("Android")
-    }
-}
