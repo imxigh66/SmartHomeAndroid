@@ -15,6 +15,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.smarthome.ui.screens.login.LoginScreen
+import com.example.smarthome.ui.screens.register.RegisterScreen
 import com.example.smarthome.ui.theme.SmartHomeTheme
 
 class MainActivity : ComponentActivity() {
@@ -47,7 +48,16 @@ class MainActivity : ComponentActivity() {
                     }
 
                     composable("register") {
-                        // TODO — добавим позже
+                        RegisterScreen(
+                            onRegisterSuccess = {
+                                navController.navigate("login") {
+                                    popUpTo("register") { inclusive = true }
+                                }
+                            },
+                            onLoginClick = {
+                                navController.popBackStack()
+                            }
+                        )
                     }
                 }
             }

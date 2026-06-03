@@ -1,4 +1,4 @@
-package com.example.smarthome.ui.screens.login
+package com.example.smarthome.ui.screens.register
 
 import android.R
 import androidx.compose.foundation.background
@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -30,28 +31,25 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
-fun LoginScreen(
-    onLoginSuccess:()->Unit,
-    onRegisterClick:()->Unit,
-    viewModel: LoginViewModel= viewModel()
-){
+fun RegisterScreen(
+    onRegisterSuccess:()->Unit,
+    onLoginClick:()->Unit,
+    viewModel: RegisterViewModel= viewModel()
+) {
     val uiState by viewModel.uiState.collectAsState()
     var passwordVisible by remember { mutableStateOf(false) }
 
     LaunchedEffect(uiState.isSuccess) {
-        if(uiState.isSuccess) onLoginSuccess()
+        if(uiState.isSuccess) onRegisterSuccess()
     }
 
     Column(
@@ -62,26 +60,39 @@ fun LoginScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         Text(
-            text = "Welcome to",
+            text = "Create Account",
             style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.onBackground
         )
         Text(
-            text = "EcoWatt!",
+            text = "Join EcoWatt!",
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary
         )
         Text(
-            text = "Monitor your energy consumption",
+            text = "Start saving energy",
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
             fontSize = 14.sp
         )
-
         Spacer(modifier = Modifier.height(40.dp))
 
+        OutlinedTextField(
+            value=uiState.name,
+            onValueChange = {viewModel.onNameChange(it)},
+            label = {Text("Name")},
+            shape = RoundedCornerShape(12.dp),
+            colors=OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.onBackground.copy(alpha=0.2f),
+                focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant
+            ),
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(32.dp))
         OutlinedTextField(
             value = uiState.email,
             onValueChange = {viewModel.onEmailChange(it)},
@@ -138,7 +149,7 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(
-            onClick = { viewModel.login() },
+            onClick = { viewModel.register() },
             enabled = !uiState.isLoading,
             shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.buttonColors(
@@ -155,32 +166,30 @@ fun LoginScreen(
                 )
             } else {
                 Text(
-                    text = "SIGN IN",
+                    text = "SIGN UP",
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp
                 )
             }
         }
-
         Spacer(modifier = Modifier.height(16.dp))
-
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "DIDN'T HAVE AN ACCOUNT? ",
+                text = "ALREADY HAVE AN ACCOUNT? ",
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
                 fontSize = 12.sp,
 
-            )
+                )
             TextButton(
-                onClick = onRegisterClick,
+                onClick = onLoginClick,
                 contentPadding = PaddingValues(0.dp)
             ) {
                 Text(
-                    text = "SIGN UP NOW",
+                    text = "SIGN IN",
                     color = MaterialTheme.colorScheme.primary,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Bold
@@ -189,17 +198,4 @@ fun LoginScreen(
         }
 
     }
-
 }
-
-@Preview
-@Composable
-private fun LoginPreview() {
-    LoginScreen(
-        onLoginSuccess = {
-        },
-        onRegisterClick = {
-        }
-    )
-}
-
