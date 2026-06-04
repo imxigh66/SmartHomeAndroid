@@ -6,8 +6,11 @@ data class LoginRequest(
 )
 
 data class LoginResponse(
-    val token:String,
-    val userId: String
+    val accessToken: String,
+    val refreshToken: String,
+    val userId: String,
+    val name: String,
+    val email: String
 )
 
 data class RegisterRequest(

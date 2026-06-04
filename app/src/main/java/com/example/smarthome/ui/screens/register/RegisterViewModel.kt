@@ -46,7 +46,7 @@ class RegisterViewModel: ViewModel(){
                 )
                 _uiState.update {it.copy(isSuccess = true) }
             }catch (e: Exception){
-                _uiState.update { it.copy(error="Ошибка регистрации") }
+                _uiState.update { it.copy(error="Registration error") }
             }finally {
                 _uiState.update { it.copy(isLoading = false) }
             }

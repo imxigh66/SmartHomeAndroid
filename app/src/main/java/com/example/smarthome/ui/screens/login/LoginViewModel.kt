@@ -3,6 +3,7 @@ package com.example.smarthome.ui.screens.login
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.smarthome.data.api.RetrofitClient
 import com.example.smarthome.data.repository.AuthRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +15,8 @@ data class LoginUiState(
     val password:String="",
     val isLoading: Boolean = false,
     val error: String? = null,
-    val isSuccess: Boolean = false
+    val isSuccess: Boolean = false,
+    val userId: String=""
 )
 
 class LoginViewModel: ViewModel(){
@@ -36,14 +38,15 @@ class LoginViewModel: ViewModel(){
             _uiState.update { it.copy(isLoading = true, error = null) }
 
             try {
-                repository.login(
+                val response = repository.login(
                     email = _uiState.value.email,
                     password = _uiState.value.password
                 )
-                _uiState.update { it.copy(isSuccess = true) }
+                RetrofitClient.token=response.accessToken
+                _uiState.update { it.copy(isSuccess = true,userId=response.userId) }
             }catch (e: Exception){
                 _uiState.update {
-                    it.copy(error = "Неыерный эмайл или пароль")
+                    it.copy(error = "Incorrect email or password")
                 }
             }finally {
                 _uiState.update { it.copy(isLoading = false) }

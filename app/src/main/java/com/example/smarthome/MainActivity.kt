@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.smarthome.ui.screens.dashboard.DashboardScreen
 import com.example.smarthome.ui.screens.login.LoginScreen
 import com.example.smarthome.ui.screens.register.RegisterScreen
 import com.example.smarthome.ui.theme.SmartHomeTheme
@@ -32,8 +33,8 @@ class MainActivity : ComponentActivity() {
                 ){
                     composable("login"){
                         LoginScreen(
-                            onLoginSuccess = {
-                                navController.navigate("dashboard"){
+                            onLoginSuccess = { userId ->
+                                navController.navigate("dashboard/$userId"){
                                     popUpTo("login"){inclusive=true}
                                 }
                             },
@@ -43,8 +44,9 @@ class MainActivity : ComponentActivity() {
                         )
                     }
 
-                    composable("dashboard") {
-                        // TODO — добавим позже
+                    composable("dashboard/{userId}") { backStackEntry ->
+                        val userId = backStackEntry.arguments?.getString("userId") ?: ""
+                        DashboardScreen(userId = userId)
                     }
 
                     composable("register") {
