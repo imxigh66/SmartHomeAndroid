@@ -1,5 +1,7 @@
 package com.example.smarthome.data.api
 
+import com.example.smarthome.data.model.AddApplianceRequest
+import com.example.smarthome.data.model.Appliance
 import com.example.smarthome.data.model.DashboardResponse
 import com.example.smarthome.data.model.LoginRequest
 import com.example.smarthome.data.model.LoginResponse
@@ -18,4 +20,10 @@ interface ApiService{
 
     @GET("dashboard")
     suspend fun getDashboard(@Query("userId") userId: String): DashboardResponse
+
+    @GET("appliances")
+    suspend fun getAppliances(): List<Appliance>
+
+    @POST("appliances")
+    suspend fun addAppliance(@Body request: AddApplianceRequest): Appliance
 }
