@@ -33,3 +33,7 @@ val TextPrimaryDark = Color(0xFF0D0D0D)
 
 // Ошибка
 val Error = Color(0xFFFF5252)
+
+val NavBackground = Color(0xFF1A1A1A)
+val NavIndicator = Color(0xFF2A2A2A)
+val NavUnselected = Color(0xFF666666)

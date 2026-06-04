@@ -9,11 +9,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.smarthome.ui.navigation.BottomNavBar
 import com.example.smarthome.ui.screens.dashboard.DashboardScreen
 import com.example.smarthome.ui.screens.login.LoginScreen
 import com.example.smarthome.ui.screens.register.RegisterScreen
@@ -25,43 +32,73 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             SmartHomeTheme {
-                val navController=rememberNavController()
+                val navController = rememberNavController()
+                var currentUserId by remember { mutableStateOf("") }
 
-                NavHost(
-                    navController=navController,
-                    startDestination="login"
-                ){
-                    composable("login"){
-                        LoginScreen(
-                            onLoginSuccess = { userId ->
-                                navController.navigate("dashboard/$userId"){
-                                    popUpTo("login"){inclusive=true}
+                val navBackStackEntry by navController.currentBackStackEntryAsState()
+                val currentRoute = navBackStackEntry?.destination?.route
+
+                val showBottomBar = currentRoute != "login" && currentRoute != "register"
+
+                Scaffold(
+                    bottomBar = {
+                        if (showBottomBar) {
+                            BottomNavBar(navController = navController, userId = currentUserId)
+                        }
+                    }
+                ) { paddingValues ->
+                    NavHost(
+                        navController = navController,
+                        startDestination = "login",
+                        modifier = Modifier.padding(paddingValues)
+                    ) {
+                        composable("login") {
+                            LoginScreen(
+                                onLoginSuccess = { id ->
+                                    currentUserId = id
+                                    navController.navigate("dashboard/$id") {
+                                        popUpTo("login") { inclusive = true }
+                                    }
+                                },
+                                onRegisterClick = {
+                                    navController.navigate("register")
                                 }
-                            },
-                            onRegisterClick = {
-                                navController.navigate("register")
-                            }
-                        )
-                    }
+                            )
+                        }
 
-                    composable("dashboard/{userId}") { backStackEntry ->
-                        val userId = backStackEntry.arguments?.getString("userId") ?: ""
-                        DashboardScreen(userId = userId)
-                    }
+                        composable("dashboard/{userId}") { backStackEntry ->
+                            val userId = backStackEntry.arguments?.getString("userId") ?: ""
+                            DashboardScreen(userId = userId)
+                        }
 
-                    composable("register") {
-                        RegisterScreen(
-                            onRegisterSuccess = {
-                                navController.navigate("login") {
-                                    popUpTo("register") { inclusive = true }
+                        composable("register") {
+                            RegisterScreen(
+                                onRegisterSuccess = {
+                                    navController.navigate("login") {
+                                        popUpTo("register") { inclusive = true }
+                                    }
+                                },
+                                onLoginClick = {
+                                    navController.popBackStack()
                                 }
-                            },
-                            onLoginClick = {
-                                navController.popBackStack()
-                            }
-                        )
+                            )
+                        }
+
+                        composable("appliances") {
+                            // TODO
+                        }
+
+                        composable("billing") {
+                            // TODO
+                        }
+
+                        composable("profile") {
+                            // TODO
+                        }
                     }
-                }
+
+
+            }
             }
         }
     }
