@@ -22,6 +22,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.smarthome.ui.navigation.BottomNavBar
 import com.example.smarthome.ui.screens.appliances.AppliancesScreen
+import com.example.smarthome.ui.screens.billing.BillingScreen
 import com.example.smarthome.ui.screens.dashboard.DashboardScreen
 import com.example.smarthome.ui.screens.login.LoginScreen
 import com.example.smarthome.ui.screens.register.RegisterScreen
@@ -90,7 +91,7 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable("billing") {
-                            // TODO
+                            BillingScreen()
                         }
 
                         composable("profile") {

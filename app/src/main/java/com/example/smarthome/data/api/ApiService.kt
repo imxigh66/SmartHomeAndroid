@@ -3,6 +3,8 @@ package com.example.smarthome.data.api
 import com.example.smarthome.data.model.AddApplianceRequest
 import com.example.smarthome.data.model.AddReadingRequest
 import com.example.smarthome.data.model.Appliance
+import com.example.smarthome.data.model.BillingPeriod
+import com.example.smarthome.data.model.CurrentMonthBilling
 import com.example.smarthome.data.model.DashboardResponse
 import com.example.smarthome.data.model.LoginRequest
 import com.example.smarthome.data.model.LoginResponse
@@ -37,4 +39,10 @@ interface ApiService{
 
     @POST("readings")
     suspend fun addReading(@Body request: AddReadingRequest): MeterReading
+
+    @GET("billing/periods")
+    suspend fun getBillingPeriods(): List<BillingPeriod>
+
+    @GET("billing/current-month")
+    suspend fun getCurrentMonth(): CurrentMonthBilling
 }
