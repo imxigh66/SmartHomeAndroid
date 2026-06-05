@@ -16,7 +16,9 @@ data class LoginUiState(
     val isLoading: Boolean = false,
     val error: String? = null,
     val isSuccess: Boolean = false,
-    val userId: String=""
+    val userId: String="",
+    val userName: String = "",
+    val userEmail: String = ""
 )
 
 class LoginViewModel: ViewModel(){
@@ -43,7 +45,12 @@ class LoginViewModel: ViewModel(){
                     password = _uiState.value.password
                 )
                 RetrofitClient.token=response.accessToken
-                _uiState.update { it.copy(isSuccess = true,userId=response.userId) }
+                _uiState.update { it.copy(
+                    isSuccess = true,
+                    userId=response.userId,
+                    userName = response.name,
+                    userEmail = response.email
+                ) }
             }catch (e: Exception){
                 _uiState.update {
                     it.copy(error = "Incorrect email or password")

@@ -25,6 +25,7 @@ import com.example.smarthome.ui.screens.appliances.AppliancesScreen
 import com.example.smarthome.ui.screens.billing.BillingScreen
 import com.example.smarthome.ui.screens.dashboard.DashboardScreen
 import com.example.smarthome.ui.screens.login.LoginScreen
+import com.example.smarthome.ui.screens.profile.ProfileScreen
 import com.example.smarthome.ui.screens.register.RegisterScreen
 import com.example.smarthome.ui.theme.SmartHomeTheme
 
@@ -33,9 +34,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            SmartHomeTheme {
+            var isDarkTheme by remember { mutableStateOf(true) }
+
+            SmartHomeTheme(darkTheme = isDarkTheme) {
                 val navController = rememberNavController()
                 var currentUserId by remember { mutableStateOf("") }
+                var currentUserName by remember { mutableStateOf("") }
+                var currentUserEmail by remember { mutableStateOf("") }
+
 
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentRoute = navBackStackEntry?.destination?.route
@@ -56,8 +62,10 @@ class MainActivity : ComponentActivity() {
                     ) {
                         composable("login") {
                             LoginScreen(
-                                onLoginSuccess = { id ->
+                                onLoginSuccess = { id, name, email  ->
                                     currentUserId = id
+                                    currentUserName = name
+                                    currentUserEmail = email
                                     navController.navigate("dashboard/$id") {
                                         popUpTo("login") { inclusive = true }
                                     }
@@ -95,7 +103,11 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable("profile") {
-                            // TODO
+                            ProfileScreen(
+                                name = currentUserName,
+                                email = currentUserEmail,
+                                onThemeToggle = { isDarkTheme = it }
+                            )
                         }
                     }
 

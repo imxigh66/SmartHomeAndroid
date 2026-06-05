@@ -40,7 +40,7 @@ fun AddReadingDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Add Meter Reading") },
-        containerColor = CardBackground,
+        containerColor = MaterialTheme.colorScheme.surfaceVariant,
         text={
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 OutlinedTextField(

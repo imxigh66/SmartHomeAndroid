@@ -43,7 +43,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun LoginScreen(
-    onLoginSuccess:(String)->Unit,
+    onLoginSuccess:(String, String, String)->Unit,
     onRegisterClick:()->Unit,
     viewModel: LoginViewModel= viewModel()
 ){
@@ -51,7 +51,7 @@ fun LoginScreen(
     var passwordVisible by remember { mutableStateOf(false) }
 
     LaunchedEffect(uiState.isSuccess) {
-        if(uiState.isSuccess) onLoginSuccess(uiState.userId)
+        if(uiState.isSuccess) onLoginSuccess(uiState.userId,uiState.userName,uiState.userEmail)
     }
 
     Column(
@@ -192,14 +192,5 @@ fun LoginScreen(
 
 }
 
-@Preview
-@Composable
-private fun LoginPreview() {
-    LoginScreen(
-        onLoginSuccess = {
-        },
-        onRegisterClick = {
-        }
-    )
-}
+
 

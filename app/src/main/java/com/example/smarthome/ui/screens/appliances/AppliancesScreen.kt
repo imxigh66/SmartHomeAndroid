@@ -82,7 +82,7 @@ fun AppliancesScreen(viewModel: AppliancesViewModel = viewModel() ) {
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
                 .padding(start = 24.dp, end = 24.dp, top = 24.dp)
-                .padding(top = paddingValues.calculateTopPadding())
+                .padding(bottom = paddingValues.calculateTopPadding())
         ) {
             Text(
                 text = "Devices",
@@ -124,7 +124,7 @@ fun AppliancesScreen(viewModel: AppliancesViewModel = viewModel() ) {
                                 modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(16.dp),
                                 colors = CardDefaults.cardColors(
-                                    containerColor = CardBackground
+                                    containerColor = MaterialTheme.colorScheme.surfaceVariant
                                 )
                             ){
                                 Row(
@@ -197,7 +197,7 @@ fun AddDeviceDialog(
     AlertDialog(
         onDismissRequest=onDismiss,
         title={Text("Add Device")},
-        containerColor = CardBackground,
+        containerColor = MaterialTheme.colorScheme.surfaceVariant,
         text={
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 OutlinedTextField(
