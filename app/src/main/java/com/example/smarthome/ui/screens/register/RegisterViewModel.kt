@@ -12,9 +12,13 @@ data class RegisterUiSTate(
     val name:String="",
     val email: String="",
     val password:String="",
+    val confirmPassword: String = "",
     val isLoading: Boolean = false,
     val error: String? = null,
-    val isSuccess: Boolean = false
+    val isSuccess: Boolean = false,
+    val nameError: String? = null,
+    val emailError: String? = null,
+    val passwordError: String? = null
 
 )
 
@@ -32,11 +36,19 @@ class RegisterViewModel: ViewModel(){
     fun onPasswordChange(password: String){
         _uiState.update { it.copy(password=password) }
     }
+    fun onConfirmPasswordChange(confirmPassword: String) {
+        _uiState.update { it.copy(confirmPassword = confirmPassword) }
+    }
 
     fun register(){
 
+        if (_uiState.value.password != _uiState.value.confirmPassword) {
+            _uiState.update { it.copy(error = "Passwords do not match") }
+            return
+        }
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
+
 
             try {
                 repository.register(
@@ -45,9 +57,29 @@ class RegisterViewModel: ViewModel(){
                     password = _uiState.value.password
                 )
                 _uiState.update {it.copy(isSuccess = true) }
-            }catch (e: Exception){
-                _uiState.update { it.copy(error="Registration error") }
-            }finally {
+            } catch (e: Exception) {
+                try {
+                    val gson = com.google.gson.Gson()
+                    val errorBody = (e as? retrofit2.HttpException)
+                        ?.response()
+                        ?.errorBody()
+                        ?.string()
+                    val validationError = gson.fromJson(
+                        errorBody,
+                        com.example.smarthome.data.model.ValidationErrorResponse::class.java
+                    )
+                    _uiState.update {
+                        it.copy(
+                            nameError = validationError.errors.firstOrNull { e -> e.field == "Name" }?.message,
+                            emailError = validationError.errors.firstOrNull { e -> e.field == "Email" }?.message,
+                            passwordError = validationError.errors.firstOrNull { e -> e.field == "Password" }?.message
+                        )
+                    }
+                } catch (parseError: Exception) {
+                    _uiState.update { it.copy(error = "Registration failed") }
+                }
+            }
+                finally {
                 _uiState.update { it.copy(isLoading = false) }
             }
         }

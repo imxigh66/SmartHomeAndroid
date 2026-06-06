@@ -2,6 +2,7 @@ package com.example.smarthome.ui.screens.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.smarthome.data.api.RetrofitClient
 import com.example.smarthome.data.model.GlobalTariff
 import com.example.smarthome.data.model.MyTariff
 import com.example.smarthome.data.repository.ProfileRepository
@@ -66,5 +67,9 @@ class ProfileViewModel : ViewModel(){
                 _uiState.update { it.copy(error = "Failed to update tariff") }
             }
         }
+    }
+
+    fun logout() {
+        RetrofitClient.token = ""
     }
 }

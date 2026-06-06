@@ -51,10 +51,26 @@ class LoginViewModel: ViewModel(){
                     userName = response.name,
                     userEmail = response.email
                 ) }
-            }catch (e: Exception){
-                _uiState.update {
-                    it.copy(error = "Incorrect email or password")
+            } catch (e: Exception) {
+                val errorMessage = try {
+                    val gson = com.google.gson.Gson()
+                    val errorBody = (e as? retrofit2.HttpException)
+                        ?.response()
+                        ?.errorBody()
+                        ?.string()
+                    if (errorBody != null) {
+                        val validationError = gson.fromJson(
+                            errorBody,
+                            com.example.smarthome.data.model.ValidationErrorResponse::class.java
+                        )
+                        validationError.errors.joinToString("\n") { it.message }
+                    } else {
+                        "Invalid email or password"
+                    }
+                } catch (parseError: Exception) {
+                    "Invalid email or password"
                 }
+                _uiState.update { it.copy(error = errorMessage) }
             }finally {
                 _uiState.update { it.copy(isLoading = false) }
             }

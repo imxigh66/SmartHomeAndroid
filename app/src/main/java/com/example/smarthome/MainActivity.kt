@@ -106,7 +106,15 @@ class MainActivity : ComponentActivity() {
                             ProfileScreen(
                                 name = currentUserName,
                                 email = currentUserEmail,
-                                onThemeToggle = { isDarkTheme = it }
+                                onThemeToggle = { isDarkTheme = it },
+                                onLogout = {
+                                    currentUserId = ""
+                                    currentUserName = ""
+                                    currentUserEmail = ""
+                                    navController.navigate("login") {
+                                        popUpTo(0) { inclusive = true }
+                                    }
+                                }
                             )
                         }
                     }
